@@ -40,7 +40,7 @@ class SettingsViewController: FormViewController {
     super.viewDidLoad()
     createForm()
   }
-  
+
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     navigationController?.setNavigationBarHidden(true, animated: true)
@@ -123,11 +123,11 @@ class SettingsViewController: FormViewController {
       Defaults[.country] = row.value?.code ?? ""
     }
   }
-  
+
   // Creates thw row for getting the stations
   private func createGetStationsRow() -> LabelRow {
     let rowTitle = "Bahnhofsdaten aktualisieren"
-    
+
     return LabelRow(RowTag.loadStations.rawValue) { row in
       row.title = rowTitle
       row.hidden = .function([RowTag.countryPicker.rawValue]) { _ in
@@ -139,7 +139,7 @@ class SettingsViewController: FormViewController {
       }.onCellSelection { (_, row) in
         row.title = "Bahnhofsdaten herunterladen"
         row.updateCell()
-        
+
         Helper.setIsUserInteractionEnabled(in: self, to: false)
         self.view.makeToastActivity(.center)
 
@@ -147,16 +147,16 @@ class SettingsViewController: FormViewController {
           row.title = "Bahnhof speichern: \(progress)/\(count)"
           row.value = "\(UInt(round(Float(progress) / Float(count) * 100)))%"
           row.updateCell()
-        }) {
+        }, completionHandler: {
           row.title = rowTitle
           if let lastUpdate = Defaults[.lastUpdate] {
             row.value = lastUpdate.relativeDateString
           }
           row.updateCell()
-          
+
           Helper.setIsUserInteractionEnabled(in: self, to: true)
           self.view.hideToastActivity()
-        }
+        })
     }
   }
 
@@ -169,7 +169,7 @@ class SettingsViewController: FormViewController {
   }
 
   // MARK: License
-  
+
   private func createLicensePickerRow() -> PickerInlineRow<License> {
     return PickerInlineRow<License>(RowTag.licensePicker.rawValue) { row in
       row.title = "Lizenz"
@@ -188,7 +188,7 @@ class SettingsViewController: FormViewController {
         Defaults[.license] = value
     }
   }
-  
+
   private func createPhotoOwnerRow() -> SwitchRow {
     return SwitchRow(RowTag.photoOwner.rawValue) { row in
       row.title = "Urheber der Fotos"
@@ -198,7 +198,7 @@ class SettingsViewController: FormViewController {
         Defaults[.photoOwner] = value
     }
   }
-  
+
   private func createLicenseSection() -> Section {
     return Section(FormSection.license.rawValue)
       <<< createLicensePickerRow()
@@ -266,9 +266,9 @@ class SettingsViewController: FormViewController {
         if TWTRTwitter.sharedInstance().sessionStore.hasLoggedInUsers() {
           row.value = "Abmelden"
         }
-      }.onCellSelection { cell, row in
+      }.onCellSelection { _, row in
         let store = TWTRTwitter.sharedInstance().sessionStore
-        if (store.hasLoggedInUsers()) {
+        if store.hasLoggedInUsers() {
           if let session = store.session() {
             store.logOutUserID(session.userID)
           }
@@ -315,9 +315,9 @@ class SettingsViewController: FormViewController {
 
     return "Mit Twitter anmelden"
   }
-  
+
   // MARK: Upload
-  
+
   private func createUploadSection() -> Section {
     return Section(FormSection.upload.rawValue)
 
@@ -342,7 +342,7 @@ class SettingsViewController: FormViewController {
           row.value = (row.value ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         }
       }
-    
+
       <<< ButtonRow(RowTag.requestToken.rawValue) { row in
         row.title = "Token anfordern"
         row.hidden = Condition.function([
@@ -352,7 +352,7 @@ class SettingsViewController: FormViewController {
           RowTag.accountName.rawValue,
           RowTag.accountNickname.rawValue,
           RowTag.accountEmail.rawValue
-        ], { form -> Bool in
+        ], { _ -> Bool in
           guard
             let nickname = Defaults[.accountNickname],
             let email = Defaults[.accountEmail],
@@ -366,7 +366,7 @@ class SettingsViewController: FormViewController {
             && email.count > 2
             && name.count > 2)
         })
-      }.onCellSelection { cell, row in
+      }.onCellSelection { _, row in
         // check if token was created recently
         if let lastRequest = Defaults[.uploadTokenRequested] {
           guard Date() > lastRequest.addingTimeInterval(60 * 5) else {
@@ -396,7 +396,7 @@ class SettingsViewController: FormViewController {
         }
       }
   }
-  
+
   private func createUploadTokenSection() -> Section {
     return Section()
 
@@ -411,20 +411,20 @@ class SettingsViewController: FormViewController {
         }
       }
   }
-  
+
   // MARK: Informations
-  
+
   private func createInformationsRow() -> LabelRow {
-    return LabelRow() { row in
+    return LabelRow { row in
       row.title = "Informationen"
-      row.onCellSelection({ (_, row) in
+      row.onCellSelection({ (_, _) in
         let acknowledgementsViewController = CPDAcknowledgementsViewController()
         self.navigationController?.pushViewController(acknowledgementsViewController, animated: true)
         acknowledgementsViewController.navigationController?.setNavigationBarHidden(false, animated: true)
       })
     }
   }
-  
+
   private func createInformationSection() -> Section {
     return Section()
       <<< createInformationsRow()

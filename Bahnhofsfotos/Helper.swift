@@ -119,7 +119,7 @@ class Helper {
     } catch let signOutError {
       debugPrint("Error signing out: \(signOutError.localizedDescription)")
     }
-    
+
     return firebaseAuth.currentUser == nil
   }
 

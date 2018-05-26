@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       // For iOS 10 display notification (sent via APNS)
       UNUserNotificationCenter.current().delegate = self
     }
-    
+
     // Initialize TwitterKit
     TWTRTwitter.sharedInstance().start(withConsumerKey: Secret.twitterKey, consumerSecret: Secret.twitterSecret)
 
@@ -81,7 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
       if let webURL = userActivity.webpageURL {
         if !present(url: webURL) {
-          UIApplication.shared.openURL(webURL)
+          UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
         }
       }
     }

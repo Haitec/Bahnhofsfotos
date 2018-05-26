@@ -43,7 +43,7 @@ class ChatViewController: JSQMessagesViewController {
     super.viewDidLoad()
 
     guard Auth.auth().currentUser != nil else {
-      let _ = Helper.signOut()
+      _ = Helper.signOut()
       return
     }
 

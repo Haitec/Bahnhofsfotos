@@ -65,16 +65,16 @@ class MapViewController: UIViewController {
 
     clusteringIsActive = !clusteringIsActive
   }
-  
+
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return .default
   }
-  
+
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    
+
     navigationController?.setNavigationBarHidden(true, animated: true)
-    
+
     showStations()
   }
 
@@ -87,10 +87,10 @@ class MapViewController: UIViewController {
     locationManager?.requestWhenInUseAuthorization()
     locationManager?.startUpdatingLocation()
   }
-  
+
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    
+
     navigationController?.setNavigationBarHidden(false, animated: true)
   }
 
@@ -138,7 +138,7 @@ extension MapViewController: MKMapViewDelegate {
       clusterView.annotation = annotation
       return clusterView
     }
-    
+
     // button for detail view
     let detailViewButton = UIButton(type: .system)
     detailViewButton.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
@@ -182,13 +182,13 @@ extension MapViewController: MKMapViewDelegate {
     } else if let annotation = view.annotation as? Station {
       StationStorage.currentStation = annotation
     }
-    
+
     // take action with station
     guard let station = StationStorage.currentStation else { return }
-    
-    if (control.accessibilityIdentifier == "detail") {
+
+    if control.accessibilityIdentifier == "detail" {
       performSegue(withIdentifier: "showDetail", sender: station)
-    } else if (control.accessibilityIdentifier == "navigation") {
+    } else if control.accessibilityIdentifier == "navigation" {
       Helper.openNavigation(to: station)
     }
   }

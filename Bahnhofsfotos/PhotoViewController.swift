@@ -36,7 +36,7 @@ class PhotoViewController: UIViewController {
       if let photoUrl = station.photoUrl, let imageUrl = URL(string: photoUrl) {
         imageView.image = nil
         activityIndicatorView.startAnimating()
-        imageView.setImage(url: imageUrl) { result in
+        imageView.setImage(url: imageUrl) { _ in
           self.activityIndicatorView.stopAnimating()
         }
       }
@@ -45,7 +45,7 @@ class PhotoViewController: UIViewController {
         savedPhoto = try PhotoStorage.fetch(id: station.id)
         if let photo = savedPhoto {
           imageView.image = UIImage(data: photo.data)
-          
+
           // allow to share assigned photo
           if photo.uploadedAt == nil {
             shareBarButton.isEnabled = true
@@ -143,7 +143,7 @@ class PhotoViewController: UIViewController {
 
       API.uploadPhoto(imageData: imageData, ofStation: station, inCountry: country, progressHandler: { progress in
         self.progressView.setProgress(Float(progress), animated: true)
-      }) { result in
+      }, completionHandler: { result in
         Helper.setIsUserInteractionEnabled(in: self, to: true)
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
         self.activityIndicatorView.stopAnimating()
@@ -160,18 +160,18 @@ class PhotoViewController: UIViewController {
         } catch {
           self.showError(error.localizedDescription)
         }
-      }
+      })
     }
   }
 
   // Share via twitter
   private func shareViaTwitter() {
-    if (TWTRTwitter.sharedInstance().sessionStore.hasLoggedInUsers()) {
+    if TWTRTwitter.sharedInstance().sessionStore.hasLoggedInUsers() {
       // App must have at least one logged-in user to compose a Tweet
       self.showTwitterComposer()
     } else {
       // Log in, and then check again
-      TWTRTwitter.sharedInstance().logIn { session, error in
+      TWTRTwitter.sharedInstance().logIn { session, _ in
         if session != nil { // Log in succeeded
           self.showTwitterComposer()
         } else {

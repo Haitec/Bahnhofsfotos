@@ -108,7 +108,7 @@ class API {
         completionHandler(json)
     }
   }
-  
+
   // Register user
   static func register(completionHandler: @escaping (Bool) -> Void) {
     let parameters: Parameters = [
@@ -119,7 +119,7 @@ class API {
       "linking": Defaults[.accountLinking] ? Defaults[.accountType].rawValue : "NO",
       "link": Defaults[.accountName]!
     ]
-    
+
     let headers: HTTPHeaders = [
       "API-Key": Secret.apiKey
     ]

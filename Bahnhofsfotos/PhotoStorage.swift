@@ -26,7 +26,7 @@ class PhotoStorage {
 
     // find path to SQLite database
     guard let path = NSSearchPathForDirectoriesInDomains(
-      .documentDirectory, .userDomainMask,  true)
+      .documentDirectory, .userDomainMask, true)
       .first else {
         throw StorageError.message("Path not found.")
     }

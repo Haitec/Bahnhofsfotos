@@ -31,7 +31,7 @@ class ChatWrapperViewController: UIViewController {
       UIApplication.shared.registerUserNotificationSettings(settings)
     }
     UIApplication.shared.registerForRemoteNotifications()
-    
+
     // TODO: https://developers.google.com/instance-id/reference/server#get_information_about_app_instances
     if Defaults[.chatNotificationsEnabled] {
       Messaging.messaging().unsubscribe(fromTopic: Constants.fcmTopic)
@@ -46,19 +46,23 @@ class ChatWrapperViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     title = "Chat"
-    
+
     navigationController?.setNavigationBarHidden(false, animated: true)
     navigationItem.hidesBackButton = true
-    
+
     showNavigationButtons()
   }
 
   func showNavigationButtons() {
     let signOutButton = UIBarButtonItem(awesomeType: .fa_sign_out, size: 18, style: .plain, target: self, action: #selector(signOut))
-    let notificationButton = UIBarButtonItem(awesomeType: (Defaults[.chatNotificationsEnabled] ? .fa_bell_slash : .fa_bell), size: 18, style: .plain, target: self, action: #selector(toggleNotification))
-    
+    let notificationButton = UIBarButtonItem(awesomeType: (Defaults[.chatNotificationsEnabled] ? .fa_bell_slash : .fa_bell),
+                                             size: 18,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(toggleNotification))
+
     navigationItem.rightBarButtonItems = [signOutButton, notificationButton]
   }
 

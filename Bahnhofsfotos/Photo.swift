@@ -9,11 +9,11 @@
 import Foundation
 
 class Photo {
-  
+
   var id: Int
   var uploadedAt: Date?
   var data: Data
-  
+
   init(data: Data, withId id: Int, uploadedAt: Date? = nil) {
     self.id = id
     self.data = data
