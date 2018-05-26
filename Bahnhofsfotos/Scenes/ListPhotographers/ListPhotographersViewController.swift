@@ -28,6 +28,14 @@ class ListPhotographersViewController: UIViewController, AppDisplayable {
 
   var viewModel: ListPhotographers.ViewModel?
 
+  lazy var refreshControl: UIRefreshControl = {
+    let refreshControl = UIRefreshControl()
+    refreshControl.addTarget(self,
+                             action: #selector(fetchPhotographers),
+                             for: .valueChanged)
+    return refreshControl
+  }()
+
   // MARK: - IBOutlets
 
   @IBOutlet weak var tableView: UITableView!
@@ -36,16 +44,25 @@ class ListPhotographersViewController: UIViewController, AppDisplayable {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
+    setUpRefreshControl()
     fetchPhotographers()
   }
 
   // MARK: - Private methods
 
-  private func fetchPhotographers() {
+  private func setUpRefreshControl() {
+    tableView.refreshControl = refreshControl
+  }
+
+  @objc private func fetchPhotographers() {
     UIApplication.shared.isNetworkActivityIndicatorVisible = true
-    view.makeToastActivity(.center)
+    refreshControl.beginRefreshing()
     interactor.fetchPhotographers()
+  }
+
+  private func endUpdating() {
+    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    refreshControl.endRefreshing()
   }
 
 }
@@ -55,15 +72,13 @@ class ListPhotographersViewController: UIViewController, AppDisplayable {
 extension ListPhotographersViewController: ListPhotographersDisplayable {
 
   func displayPhotographers(with viewModel: ListPhotographers.ViewModel) {
-    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-    view.hideToastActivity()
+    endUpdating()
     self.viewModel = viewModel
     tableView.reloadData()
   }
 
   func display(error: AppError) {
-    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-    view.hideToastActivity()
+    endUpdating()
 
     let alertController = UIAlertController(title: error.title,
                                             message: error.message,
