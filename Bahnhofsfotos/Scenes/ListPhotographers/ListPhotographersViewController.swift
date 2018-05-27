@@ -20,20 +20,20 @@ class ListPhotographersViewController: UIViewController, AppDisplayable {
 
   // MARK: - Properties
 
-  private lazy var interactor: ListPhotographersBusinessLogic = {
-    let presenter = ListPhotographersPresenter(viewController: self)
-    return ListPhotographersInteractor(presenter: presenter,
-                                       dataStore: PhotographersAPI())
-  }()
-
-  var viewModel: ListPhotographers.ViewModel?
-
-  lazy var refreshControl: UIRefreshControl = {
+  private lazy var refreshControl: UIRefreshControl = {
     let refreshControl = UIRefreshControl()
     refreshControl.addTarget(self,
                              action: #selector(fetchPhotographers),
                              for: .valueChanged)
     return refreshControl
+  }()
+
+  private var viewModel: ListPhotographers.ViewModel?
+
+  lazy var interactor: ListPhotographersBusinessLogic = {
+    let presenter = ListPhotographersPresenter(viewController: self)
+    return ListPhotographersInteractor(presenter: presenter,
+                                       dataStore: PhotographersAPI())
   }()
 
   // MARK: - IBOutlets
